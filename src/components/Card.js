@@ -8,7 +8,7 @@ const Card = ({ product }) => {
   const { shoppingCart, setShoppingCart, open, setOpen } = useContext(
     ShoppingCartContext
   );
-  const imgSrc = `data/products/${product.sku}_2.jpg`;
+  const imgSrc = `data/products/${product.sku}_1.jpg`;
   return(
     <li className="card-container">
         <img src={imgSrc} alt="" />

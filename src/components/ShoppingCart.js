@@ -74,13 +74,16 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen
     }),
     marginRight: 0
+  },
+  toolbarButtons: {
+    marginLeft: "auto"
   }
 }));
 
 const ShoppingCart = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const { shoppingCart, open, setOpen } = useContext(ShoppingCartContext);
+  const { shoppingCart, setShoppingCart, open, setOpen } = useContext(ShoppingCartContext);
   // const { open, setOpen } = useContext(ShoppingCartContext);
 
   const handleDrawerOpen = () => {
@@ -90,6 +93,12 @@ const ShoppingCart = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleDelete = product => {
+    const newShoppingCart = shoppingCart.filter(item => product.id !== item.id);
+    setShoppingCart(newShoppingCart);
+  };
+
 
   return (
     <div className={classes.root}>
@@ -137,11 +146,20 @@ const ShoppingCart = () => {
               <ChevronRightIcon />
             )}
           </IconButton>
+
+        <p>Shopping cart</p>
         </div>
         <Divider />
+
+        
         {shoppingCart.map(product => (
           <List>
             <li className="card-container">
+              <IconButton
+                  className={classes.toolbarButtons}
+                  onClick={() => handleDelete(product)}>
+                  X
+                </IconButton>
               <img src={`data/products/${product.sku}_2.jpg`} alt="" />
               <p>{product.title}</p>
               <p>{`$${product.price}`}</p>
