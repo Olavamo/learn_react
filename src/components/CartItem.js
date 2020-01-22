@@ -6,7 +6,7 @@ const CartItem = ({ product }) => {
     <IconButton className={classes.toolbarButtons} onClick={handleDelete}>
       X
     </IconButton>
-    <img src={`data/products/${product.sku}_2.jpg`} alt="" />
+    <img src={`data/products/${product.sku}_1.jpg`} alt="" />
     <p>{product.title}</p>
     <p>{`$${product.price}`}</p>
     <p>Size: {product.size}</p>

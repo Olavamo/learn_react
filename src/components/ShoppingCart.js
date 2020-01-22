@@ -8,6 +8,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -168,7 +169,15 @@ const ShoppingCart = () => {
           </List>
         ))}
         <Divider />
-        <List>{}</List>
+          {shoppingCart.length == 0 ? (
+            <span style={{textAlign:"center", marginTop:"50%"}}>Cart is empty</span>
+          ) : null}
+          {
+            shoppingCart.length >= 1 ? (
+              <Button variant="contained" color="primary">
+              Checkout
+            </Button>
+            ) : null}
       </Drawer>
     </div>
   );
