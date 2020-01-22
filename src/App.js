@@ -20,7 +20,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database().ref();
+const dbLink = firebase.database()
+const db = dbLink.ref();
 
 const uiConfig = {
   signInFlow: "popup",
@@ -86,7 +87,7 @@ const App = () => {
   return (
     <ShoppingCartProvider>
       <ul>
-      <ShoppingCart />
+      <ShoppingCart inventory={inventory} setInventory={setInventory} />
       <Banner user={user}/>
         <CardList
           products={products}
@@ -99,3 +100,4 @@ const App = () => {
 };
 
 export default App;
+export { dbLink };

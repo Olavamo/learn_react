@@ -8,6 +8,11 @@ const SizeBox = ({ state }) => {
   const addShoppingCart = size => {
     const id = Math.random() * Math.random() * 100000;
     setShoppingCart([...shoppingCart, { ...product, size, id }]);
+    // Update Inventory
+    const copiedInventory = Object.assign({}, inventory);
+    copiedInventory[product.sku][size]--;
+    setInventory(copiedInventory);
+
     setOpen(true);
   };
 

@@ -1,22 +1,28 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
+import { dbLink } from "../App";
 import clsx from "clsx";
 import "./Card.css";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
+// import "./ShoppingCart.css";
+import {
+  makeStyles,
+  useTheme,
+  Drawer,
+  Toolbar,
+  Button,
+  AppBar,
+  List,
+  Typography,
+  IconButton,
+  Divider,
+  CssBaseline
+} from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import { ShoppingCartContext } from "../context/ShoppingCartContext";
 
 const drawerWidth = 240;
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -81,11 +87,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const ShoppingCart = () => {
+const ShoppingCart = ({ inventory, setInventory }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const { shoppingCart, setShoppingCart, open, setOpen } = useContext(ShoppingCartContext);
-  // const { open, setOpen } = useContext(ShoppingCartContext);
+  const { shoppingCart, setShoppingCart, open, setOpen } = useContext(
+    ShoppingCartContext
+  );
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -98,8 +105,48 @@ const ShoppingCart = () => {
   const handleDelete = product => {
     const newShoppingCart = shoppingCart.filter(item => product.id !== item.id);
     setShoppingCart(newShoppingCart);
+
+    //update Inventory
+    const copiedInventory = Object.assign({}, inventory);
+    copiedInventory[product.sku][product.size]++;
+    setInventory(copiedInventory);
   };
 
+  const CartItem = ({ product }) => {
+    return (
+      <li className="card-container">
+        <IconButton
+          className={classes.toolbarButtons}
+          onClick={() => handleDelete(product)}
+        >
+          X
+        </IconButton>
+        <img src={`data/products/${product.sku}_2.jpg`} alt="" />
+        <p>{product.title}</p>
+        <p>{`$${product.price}`}</p>
+        <p>Size: {product.size}</p>
+      </li>
+    );
+  };
+
+  const handleCheckout = () => {
+    // NEED TO REVIEW
+    dbLink.ref().set(inventory);
+    // Empty ShoppingCart
+    setShoppingCart([]);
+    alert("Venmo @CharlesSon");
+  };
+
+  const CheckOut = () => {
+    return shoppingCart.length >= 1 ? (
+      <div className="checkout-button">
+        <List>Total: ${shoppingCart.reduce((a, b) => a + b.price, 0)}</List>
+        <Button variant="contained" color="primary" onClick={handleCheckout}>
+          Checkout
+        </Button>
+      </div>
+    ) : null;
+  };
 
   return (
     <div className={classes.root}>
@@ -147,37 +194,23 @@ const ShoppingCart = () => {
               <ChevronRightIcon />
             )}
           </IconButton>
-
-        <p>Shopping cart</p>
         </div>
         <Divider />
-
-        
         {shoppingCart.map(product => (
           <List>
-            <li className="card-container">
-              <IconButton
-                  className={classes.toolbarButtons}
-                  onClick={() => handleDelete(product)}>
-                  X
-                </IconButton>
-              <img src={`data/products/${product.sku}_2.jpg`} alt="" />
-              <p>{product.title}</p>
-              <p>{`$${product.price}`}</p>
-              <p>Size: {product.size}</p>
-            </li>
+            <CartItem
+              product={product}
+              inventory={inventory}
+              setInventory={setInventory}
+            />
           </List>
         ))}
         <Divider />
-          {shoppingCart.length == 0 ? (
-            <span style={{textAlign:"center", marginTop:"50%"}}>Cart is empty</span>
+        {shoppingCart.length == 0 ? (
+            <span style={{textAlign:"center", marginTop:"50%"}}>Cart is empty!</span>
           ) : null}
-          {
-            shoppingCart.length >= 1 ? (
-              <Button variant="contained" color="primary">
-              Checkout
-            </Button>
-            ) : null}
+
+        <CheckOut shoppingCart={shoppingCart} />
       </Drawer>
     </div>
   );
